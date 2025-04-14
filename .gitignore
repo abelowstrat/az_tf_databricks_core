@@ -1,0 +1,132 @@
+# ===========================
+# Terraform
+# ===========================
+
+# Local Terraform state files
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+
+# Crash log files
+crash.log
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Terraform directories
+.terraform/
+
+# ===========================
+# Databricks
+# ===========================
+
+# Databricks-specific secrets and configurations
+# It's good practice to keep sensitive configurations out of version control
+secrets/*.tfvars
+secrets/*.json
+
+# Databricks notebooks (if exporting/importing)
+# Adjust the path based on your project structure
+**/notebooks/*.dbc
+**/notebooks/*.json
+
+# ===========================
+# IDE and Editor Configurations
+# ===========================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (IntelliJ, PyCharm, etc.)
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Eclipse
+.project
+.classpath
+.c9/
+
+# Atom
+.atom/
+
+# Emacs
+*~
+
+# Vim
+*.swp
+*.swo
+
+# ===========================
+# OS Generated Files
+# ===========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ===========================
+# Logs and Databases
+# ===========================
+
+# Log files
+*.log
+
+# Database files
+*.sql
+*.sqlite
+
+# ===========================
+# Build and Dependency Directories
+# ===========================
+
+# Terraform modules
+#modules/
+
+# External dependencies
+.terraform.lock.hcl
+
+# ===========================
+# Miscellaneous
+# ===========================
+
+# Backup files
+*.bak
+*.tmp
+*.temp
+
+# Secret files
+*.pem
+*.key
+*.crt
+
+# ===========================
+# Optional: Custom Paths
+# ===========================
+
+# If you have custom directories or files to exclude, add them below
+# /path/to/excluded_directory/
+# *.secret_extension
+
+__azurite_db_table__.json
