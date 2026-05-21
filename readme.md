@@ -15,8 +15,10 @@ This project sets up an Azure Databricks environment, connects it to a repo with
 
 - **main.tf**: Defines the Terraform configuration for the Azure Resource Group, Databricks Workspace, and includes module calls.
 - **variables.tf**: Contains the variable definitions used in the Terraform configuration.
-- **terraform.auto.tfvars**: Contains sensitive variables like service principal credentials.
-- **cluster.auto.tfvars**: Additional parameters for the cluster.
+- **terraform.auto.tfvars**: Core tenant, subscription, workspace, and metastore inputs.
+- **repos.auto.tfvars**: Git and Databricks repo configuration.
+- **cluster.auto.tfvars**: Databricks cluster configuration.
+- **deployment.auto.tfvars**: Module deployment toggles.
 - **deployment.tf**: Additional deployment configurations.
 - **generate-docs.ps1**: Script to generate documentation.
 - **modules/**: Contains the Terraform modules for various Databricks resources.
@@ -80,6 +82,7 @@ This project sets up an Azure Databricks environment, connects it to a repo with
         **`terraform.auto.tfvars`**:
         ```hcl
         azure_tenant_id = "<your-tenant-id>"
+        tenant_id = "<your-tenant-id>"
         single_user_name = "<your-single-user-name>"
         subscription_id = "<your-subscription-id>"
         metastore_id = "<your-metastore-id>"
@@ -90,6 +93,7 @@ This project sets up an Azure Databricks environment, connects it to a repo with
 
         **`repos.auto.tfvars`**:
         ```hcl
+        git_provider = "gitHub"
         git_username = "<your-git-username>"
         personal_access_token = "<your-personal-access-token>"
         repo_url = "<your-repo-url>"
@@ -106,6 +110,15 @@ This project sets up an Azure Databricks environment, connects it to a repo with
         node_type = "<your-node-type>"
         ```
 
+        **`deployment.auto.tfvars`**:
+        ```hcl
+        deploy_databricks_repos = true
+        deploy_databricks_clusters = true
+        deploy_databricks_metastore = false
+        deploy_databricks_catalog = false
+        include_databricks_notebooks = false
+        ```
+
     - Alternatively, you can set these variables using environment variables. Please make sure that you have no conflicting variables set in your environment, as these always take precedence over the `.tfvars` files.
 
 3. **Login to Azure and Select your Subscription**:
@@ -117,17 +130,32 @@ This project sets up an Azure Databricks environment, connects it to a repo with
     az login --tenant <tenant_id>
     ```
 
-4. **Initialize Terraform**:
-    ```sh
-    terraform init
+4. **Set Terraform Environment Variables**:
+    Use environment variables to point Terraform and the AzureRM backend at the correct subscription.
+    ```powershell
+    $env:ARM_SUBSCRIPTION_ID = "5c4514c5-ae5b-424c-ac22-ebc7547d0af0"
+    $env:TF_VAR_subscription_id = "5c4514c5-ae5b-424c-ac22-ebc7547d0af0"
     ```
 
-5. **Plan the Infrastructure**:
+    If your authentication flow needs explicit service principal settings, also export:
+    ```powershell
+    $env:ARM_TENANT_ID = "<your-tenant-id>"
+    $env:ARM_CLIENT_ID = "<your-client-id>"
+    $env:ARM_CLIENT_SECRET = "<your-client-secret>"
+    ```
+
+5. **Initialize Terraform**:
+      This project uses Terraform local state by default.
+    ```powershell
+      terraform init
+    ```
+
+6. **Plan the Infrastructure**:
     ```sh
     terraform plan
     ```
 
-6. **Apply the Configuration**:
+7. **Apply the Configuration**:
     ```sh
     terraform apply
     ```

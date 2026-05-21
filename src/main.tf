@@ -9,12 +9,6 @@ terraform {
       version = "~> 1.0"
     }
   }
-  backend "azurerm" {
-    resource_group_name  = "ab_dna_dev"
-    storage_account_name = "abdevdbstate"
-    container_name       = "dev"
-    key                  = "databricks-genai-platform-state/terraform.tfstate"
-  }
 }
 
 # primary provider
@@ -44,12 +38,6 @@ data "azurerm_key_vault_secret" "service_principal_client_secret" {
   key_vault_id = data.azurerm_key_vault.example.id
 }
 
-data "azurerm_key_vault_secret" "azure_tenant_id" {
-  provider     = azurerm
-  name         = "tenant-id"
-  key_vault_id = data.azurerm_key_vault.example.id
-}
-
 # Resource Group
 resource "azurerm_resource_group" "databricks_training_rg" {
   name     = var.resource_group_name
@@ -70,12 +58,13 @@ provider "databricks" {
   azure_workspace_resource_id = azurerm_databricks_workspace.databricks_workspace.id
   azure_client_id             = data.azurerm_key_vault_secret.service_principal_client_id.value
   azure_client_secret         = data.azurerm_key_vault_secret.service_principal_client_secret.value
-  azure_tenant_id             = data.azurerm_key_vault_secret.azure_tenant_id.value
+  azure_tenant_id             = var.azure_tenant_id
 }
 
 ### --- Token --- ###
 # Access Token for Databricks
 resource "databricks_token" "access_token" {
+  count      = var.deploy_databricks_clusters ? 1 : 0
   comment    = "Token for Terraform-managed cluster"
   depends_on = [azurerm_databricks_workspace.databricks_workspace]
 }
@@ -94,7 +83,7 @@ module "databricks_clusters" {
   node_type                       = var.node_type
   cluster_data_security_mode      = var.cluster_data_security_mode
   single_user_name                = var.single_user_name
-  depends_on                      = [databricks_token.access_token]
+  depends_on                      = [databricks_token.access_token[0]]
 }
 
 #-- Metastore

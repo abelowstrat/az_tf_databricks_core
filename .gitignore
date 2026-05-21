@@ -46,6 +46,9 @@ secrets/*.json
 .vscode/
 *.code-workspace
 
+# Agents
+.copilot-tracking/
+
 # JetBrains IDEs (IntelliJ, PyCharm, etc.)
 .idea/
 *.iml
